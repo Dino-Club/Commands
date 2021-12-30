@@ -1,2 +1,2 @@
-# commands
+# Commands
 Custom Commands for DinoClassic

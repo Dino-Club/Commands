@@ -46,7 +46,7 @@ namespace MCGalaxy
                     builder.Append(nick);
                     if (i < players.Count - 1) builder.Append(", ");
                 }
-                if (kvp.Key.CaselessContains("ClassiCube "))
+                if (builder.ToString().Contains("+"))
                 {
                     p.Message(" Classicube Client: &f{0}", builder.ToString());
                 }

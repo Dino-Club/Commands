@@ -19,6 +19,7 @@ namespace MCGalaxy
 		public override void Use(Player p, string message)
 		{
             Dictionary<string, List<Player>> clients = new Dictionary<string, List<Player>>();
+            Dictionary<string, List<Player>> bcclients = new Dictionary<string, List<Player>>();
             Player[] online = PlayerInfo.Online.Items;
 
             foreach (Player pl in online)
@@ -26,15 +27,31 @@ namespace MCGalaxy
                 string appName = PlayerInfo.ClientName(pl);
 
                 List<Player> usingClient;
-                if (!clients.TryGetValue(appName, out usingClient))
+                List<Player> usingBCClient;
+                if (appName != null && pl.name.Contains("+"))
                 {
-                    usingClient = new List<Player>();
-                    clients[appName] = usingClient;
+                    if (!clients.TryGetValue(appName, out usingClient))
+                    {
+                        usingClient = new List<Player>();
+                        clients[appName] = usingClient;
+                    }
+                    usingClient.Add(pl);
                 }
-                usingClient.Add(pl);
+                else
+                {
+                    if (!bcclients.TryGetValue(appName, out usingBCClient))
+                    {
+                        usingBCClient = new List<Player>();
+                        bcclients[appName] = usingBCClient;
+                    }
+                    usingBCClient.Add(pl);
+                }
+                    
+                
+                     
             }
 
-            p.Message("Players using:");
+            p.Message("Players using Classicube Client:");
             foreach (var kvp in clients)
             {
                 StringBuilder builder = new StringBuilder();
@@ -46,14 +63,23 @@ namespace MCGalaxy
                     builder.Append(nick);
                     if (i < players.Count - 1) builder.Append(", ");
                 }
-                if (builder.ToString().Contains("+"))
+       
+                p.Message("&f{0}", builder.ToString());   
+            }
+            p.Message("Players using Betacraft Client:");
+            foreach (var kvp in bcclients)
+            {
+                StringBuilder builder = new StringBuilder();
+                List<Player> players = kvp.Value;
+
+                for (int i = 0; i < players.Count; i++)
                 {
-                    p.Message(" Classicube Client: &f{0}", builder.ToString());
+                    string nick = Colors.StripUsed(p.FormatNick(players[i]));
+                    builder.Append(nick);
+                    if (i < players.Count - 1) builder.Append(", ");
                 }
-                else
-                {
-                    p.Message(" Betacraft Client: &f{0}", builder.ToString());
-                }
+
+                p.Message("&f{0}", builder.ToString());
             }
         }
 
